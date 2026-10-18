@@ -70,6 +70,31 @@
     "file": "docs/0-B-real_analysis/0-B-5. 연속성은 무엇을 보존하는가.md"
   },
   {
+    "id": "0-B-6",
+    "title": "0-B-6. 미분계수에서 선형근사로",
+    "file": "docs/0-B-real_analysis/0-B-6. 미분계수에서 선형근사로.md"
+  },
+  {
+    "id": "0-B-7",
+    "title": "0-B-7. 미분은 무엇을 알려 주는가",
+    "file": "docs/0-B-real_analysis/0-B-7. 미분은 무엇을 알려 주는가.md"
+  },
+  {
+    "id": "0-B-8",
+    "title": "0-B-8. 적분은 어떻게 정의되는가",
+    "file": "docs/0-B-real_analysis/0-B-8. 적분은 어떻게 정의되는가.md"
+  },
+  {
+    "id": "0-B-9",
+    "title": "0-B-9. 미분과 적분은 왜 연결되는가",
+    "file": "docs/0-B-real_analysis/0-B-9. 미분과 적분은 왜 연결되는가.md"
+  },
+  {
+    "id": "0-B-10",
+    "title": "0-B-10. 함수열과 균등수렴",
+    "file": "docs/0-B-real_analysis/0-B-10. 함수열과 균등수렴.md"
+  },
+  {
     "id": "0-B-66",
     "title": "0-B-6. 변화율을 극한으로 붙잡다 — 미분계수와 도함수",
     "file": "docs/0-B-real_analysis/0-B-66. 변화율을 극한으로 붙잡다 — 미분계수와 도함수.md"
