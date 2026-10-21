@@ -276,20 +276,24 @@
     .pager-btn:hover:not(:disabled) { background: var(--border-color); }
     .pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
+    /* 클릭 가능함을 암시하는 버튼형 UI로 개선 */
     .pager-info-container {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      padding: 1px 4px;
-      border-radius: 4px;
-      transition: background 0.15s ease;
+      padding: 2px 8px;
+      margin: 0 4px;
+      border-radius: 6px;
+      background: var(--paper-bg);
+      border: 1px solid var(--border-color);
+      transition: all 0.15s ease;
       user-select: none;
-      min-width: 54px;
+      min-width: 58px;
     }
 
     .pager-info-container:hover {
-      background: var(--border-color);
+      border-color: var(--primary-color);
     }
 
     .pager-current, .pager-total {
@@ -297,10 +301,6 @@
       font-weight: 700;
       color: var(--title-color);
       font-variant-numeric: tabular-nums;
-    }
-
-    .pager-current {
-      border-bottom: 1px dashed var(--primary-color);
     }
 
     .pager-input {
@@ -1160,7 +1160,7 @@
       #hidden-measurer { padding: 20px 22px; }
       .view-scroll { padding-left: 14px; padding-right: 14px; }
       .doc-nav-btn { max-width: 100%; min-width: 0; width: 100%; }
-      .pager-info { min-width: 44px; font-size: 0.74rem; }
+      .pager-info-container { min-width: 44px; font-size: 0.74rem; }
       .pager-btn { padding: 2px 4px; font-size: 0.72rem; }
       .modal-box { padding: 16px 14px 14px 14px; max-width: 290px; }
     }
@@ -1277,11 +1277,11 @@
       </div>
 
       <div class="setting-group">
-        <label class="setting-label" for="margin-select">본문 여백 (낱장 모드)</label>
+        <label class="setting-label" for="margin-select">문서 너비 (낱장 모드)</label>
         <select class="styled-select" id="margin-select">
-          <option value="0.95">좁게 (본문 95%)</option>
+          <option value="0.95">넓게 (본문 95%)</option>
           <option value="0.80" selected>보통 (본문 80%)</option>
-          <option value="0.65">넓게 (본문 65%)</option>
+          <option value="0.65">좁게 (본문 65%)</option>
         </select>
       </div>
 
@@ -1334,13 +1334,14 @@
           </div>
           <div class="app-info-row">
             <span>뷰어 버젼</span>
-            <span class="badge-version">1.2.1</span>
+            <span class="badge-version">1.2.3</span>
           </div>
         </div>
       </div>
     </div>
   </aside>
 
+  <!-- 읽기 위치 확인 모달 팝업 -->
   <div id="resume-modal-overlay" class="modal-overlay" style="display: none;">
     <div class="modal-box" id="resume-modal-box" role="dialog" aria-modal="true">
       <div class="modal-header-row">
@@ -1358,7 +1359,7 @@
     <article class="book-article" id="raw-article">
       <div class="card">
         <h3>문서를 불러올 준비가 되었습니다.</h3>
-        <p>왼쪽 상단의 <strong>[📁 열기]</strong> 버튼을 눌러 컴퓨터에 있는 마크다운(<code>.md</code>) 파일을 직접 열거나, <code>manifest.json</code>에 등록된 목록에서 문서를 선택하세요[cite: 1].</p>
+        <p>왼쪽 상단의 <strong>[📁 열기]</strong> 버튼을 눌러 컴퓨터에 있는 마크다운(<code>.md</code>) 파일을 직접 열거나, <code>manifest.json</code>에 등록된 목록에서 문서를 선택하세요.</p>
       </div>
     </article>
 
@@ -1395,7 +1396,8 @@
     let currentFontSize = 22;
     let currentFontWeight = 500;
     let currentMode = 'scroll';
-    let currentMarginRatio = 0.80;
+    // 모바일 초기 접속 시 '넓게(95%)', 데스크톱 시 '좁게(65%)' 자동 설정
+    let currentMarginRatio = window.innerWidth < 768 ? 0.95 : 0.65;
     let currentPageIndex = 0;
     let totalPageCount = 1;
     let wheelCooldown = false;
@@ -1495,8 +1497,8 @@
       if (Array.from(marginSelect.options).some(opt => opt.value === formattedVal)) {
         marginSelect.value = formattedVal;
       } else {
-        marginSelect.value = "0.80";
-        currentMarginRatio = 0.80;
+        currentMarginRatio = window.innerWidth < 768 ? 0.95 : 0.65;
+        marginSelect.value = Number(currentMarginRatio).toFixed(2);
       }
     }
 
@@ -1543,6 +1545,8 @@
         }
         if (typeof s.marginRatio === 'number') {
           currentMarginRatio = s.marginRatio;
+        } else {
+          currentMarginRatio = window.innerWidth < 768 ? 0.95 : 0.65;
         }
         if (s.mode) {
           currentMode = s.mode;
@@ -1550,6 +1554,7 @@
 
         syncMarginControlState();
       } catch (e) {
+        currentMarginRatio = window.innerWidth < 768 ? 0.95 : 0.65;
         syncMarginControlState();
       }
     }
@@ -1599,6 +1604,7 @@
       } catch (e) {}
     }
 
+    // 전체화면 토글 기능
     function toggleFullscreen() {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(err => {
@@ -2713,6 +2719,12 @@
     });
 
     window.addEventListener('keydown', (e) => {
+      if (e.key === 'F11') {
+        e.preventDefault();
+        toggleFullscreen();
+        return;
+      }
+
       if (isResumeModalOpen) {
         if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
           e.preventDefault();
