@@ -240,7 +240,6 @@
       100% { transform: translateX(-50%); }
     }
 
-    /* 낱장 보기 상단 페이저 및 인라인 페이지 입력 스타일 */
     .header-pager {
       display: none;
       align-items: center;
@@ -276,7 +275,6 @@
     .pager-btn:hover:not(:disabled) { background: var(--border-color); }
     .pager-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-    /* 클릭 가능함을 암시하는 버튼형 UI로 개선 */
     .pager-info-container {
       display: inline-flex;
       align-items: center;
@@ -1359,7 +1357,7 @@
     <article class="book-article" id="raw-article">
       <div class="card">
         <h3>문서를 불러올 준비가 되었습니다.</h3>
-        <p>왼쪽 상단의 <strong>[📁 열기]</strong> 버튼을 눌러 컴퓨터에 있는 마크다운(<code>.md</code>) 파일을 직접 열거나, <code>manifest.json</code>에 등록된 목록에서 문서를 선택하세요.</p>
+        <p>왼쪽 상단의 <strong>[📁 열기]</strong> 버튼을 눌러 컴퓨터에 있는 마크다운(<code>.md</code>) 파일을 직접 열거나, <code>manifest.json</code>에 등록된 목록에서 문서를 선택하세요[cite: 1].</p>
       </div>
     </article>
 
@@ -1396,7 +1394,6 @@
     let currentFontSize = 22;
     let currentFontWeight = 500;
     let currentMode = 'scroll';
-    // 모바일 초기 접속 시 '넓게(95%)', 데스크톱 시 '좁게(65%)' 자동 설정
     let currentMarginRatio = window.innerWidth < 768 ? 0.95 : 0.65;
     let currentPageIndex = 0;
     let totalPageCount = 1;
@@ -1604,7 +1601,6 @@
       } catch (e) {}
     }
 
-    // 전체화면 토글 기능
     function toggleFullscreen() {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(err => {
