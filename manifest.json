@@ -50,6 +50,11 @@
     "file": "docs/0-A-선형대수/old/0-A-7.md"
   },
   {
+    "id": "0-A-7",
+    "title": "0-A-7_inner_product_and_metric",
+    "file": "docs/0-A-선형대수/old/0-A-7_inner_product_and_metric.md"
+  },
+  {
     "id": "0-A-8",
     "title": "0-A-8. 특별한 방향을 찾다 — 고윳값과 대각화",
     "file": "docs/0-A-선형대수/0-A-8. 특별한 방향을 찾다 — 고윳값과 대각화.md"
