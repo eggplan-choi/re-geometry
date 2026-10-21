@@ -6,7 +6,7 @@ DOCS_DIR = 'docs'
 OUTPUT_FILE = 'manifest.json'
 
 def natural_sort_key(s):
-    """문자열 내의 숫자를 실제 크기로 정렬하는 키 함수 (0-A-2가 0-A-10보다 앞에 오도록 처리)"""
+    """문자열 내의 숫자를 실제 크기로 정렬하는 키 함수 (1 다음에 2, 그리고 10이 오도록 처리)"""
     return [int(text) if text.isdigit() else text.lower() for text in re.split(r'(\d+)', s)]
 
 def build_manifest():
@@ -15,21 +15,26 @@ def build_manifest():
         return
 
     md_files = []
-    # docs/ 하위 모든 폴더를 탐색
-    for root, _, files in os.walk(DOCS_DIR):
+    
+    # docs/ 하위 폴더 탐색
+    for root, dirs, files in os.walk(DOCS_DIR):
+        # '_'로 시작하는 폴더는 탐색 트리에서 즉시 배제 (하위 진입 차단)
+        dirs[:] = [d for d in dirs if not d.startswith('_')]
+
         for f in files:
-            if f.endswith('.md'):
+            # '_'로 시작하는 임시 마크다운 파일도 함께 제외 (필요시)
+            if f.endswith('.md') and not f.startswith('_'):
                 full_path = os.path.join(root, f).replace('\\', '/')
                 md_files.append((f, full_path))
 
-    # 자연 정렬 적용
-    md_files.sort(key=lambda item: natural_sort_key(item[0]))
+    # 전체 경로 기준으로 자연 정렬
+    md_files.sort(key=lambda item: natural_sort_key(item[1]))
 
     manifest = []
     for filename, filepath in md_files:
         name_without_ext = os.path.splitext(filename)[0]
 
-        # 1. id 추출: 파일명 앞단의 '0-A-1' 형태 추출 (일치하지 않으면 파일명 전체 사용)
+        # 1. id 추출: 파일명 앞단의 식별 패턴 추출 (없으면 파일명 전체 사용)
         id_match = re.match(r'^([0-9A-Za-z\-]+)', name_without_ext)
         file_id = id_match.group(1) if id_match else name_without_ext
 
