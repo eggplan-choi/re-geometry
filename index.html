@@ -1160,6 +1160,7 @@
       #hidden-measurer { padding: 20px 22px; }
       .view-scroll { padding-left: 14px; padding-right: 14px; }
       .doc-nav-btn { max-width: 100%; min-width: 0; width: 100%; }
+      .pager-info { min-width: 44px; font-size: 0.74rem; }
       .pager-btn { padding: 2px 4px; font-size: 0.72rem; }
       .modal-box { padding: 16px 14px 14px 14px; max-width: 290px; }
     }
@@ -1329,18 +1330,17 @@
           </div>
           <div class="app-info-row">
             <span>최종 뷰어 업데이트</span>
-            <strong>2026.10.20</strong>
+            <strong>2026.10.21</strong>
           </div>
           <div class="app-info-row">
             <span>뷰어 버젼</span>
-            <span class="badge-version">1.2.0</span>
+            <span class="badge-version">1.2.1</span>
           </div>
         </div>
       </div>
     </div>
   </aside>
 
-  <!-- 읽기 위치 확인 모달 팝업 -->
   <div id="resume-modal-overlay" class="modal-overlay" style="display: none;">
     <div class="modal-box" id="resume-modal-box" role="dialog" aria-modal="true">
       <div class="modal-header-row">
@@ -1599,7 +1599,6 @@
       } catch (e) {}
     }
 
-    // 전체화면 토글 및 버튼 동기화
     function toggleFullscreen() {
       if (!document.fullscreenElement) {
         document.documentElement.requestFullscreen().catch(err => {
@@ -1629,7 +1628,6 @@
     btnFullscreen.addEventListener('click', toggleFullscreen);
     document.addEventListener('fullscreenchange', updateFullscreenBtn);
 
-    // 낱장 모드 페이지 직접 입력 인라인 제어
     function openPageInput() {
       if (currentMode !== 'single') return;
       pagerCurrentDisplay.style.display = 'none';
@@ -1672,7 +1670,6 @@
       closePageInput(true);
     });
 
-    // 팝업 모달 제어 함수
     function setModalFocus(index) {
       modalFocusedIndex = index;
       if (modalFocusedIndex === 0) {
@@ -2475,22 +2472,24 @@
         setSidebarOpen(false);
         toggleSettings(false);
 
-        splitDocumentIntoPages();
+        requestAnimationFrame(() => {
+          splitDocumentIntoPages();
 
-        if (fromBlockIdx === '__ENDING__') {
-          currentPageIndex = totalPageCount - 1;
-        } else {
-          let matchedPage = 0;
-          const sheets = pageFrame.querySelectorAll('.paged-sheet');
-          for (let p = 0; p < sheets.length; p++) {
-            if (sheets[p].querySelector(`[data-block-idx="${fromBlockIdx}"]`)) {
-              matchedPage = p;
-              break;
+          if (fromBlockIdx === '__ENDING__') {
+            currentPageIndex = totalPageCount - 1;
+          } else {
+            let matchedPage = 0;
+            const sheets = pageFrame.querySelectorAll('.paged-sheet');
+            for (let p = 0; p < sheets.length; p++) {
+              if (sheets[p].querySelector(`[data-block-idx="${fromBlockIdx}"]`)) {
+                matchedPage = p;
+                break;
+              }
             }
+            currentPageIndex = matchedPage;
           }
-          currentPageIndex = matchedPage;
-        }
-        showPage(currentPageIndex);
+          showPage(currentPageIndex);
+        });
       } else {
         currentMode = 'scroll';
         saveViewerSettings();
