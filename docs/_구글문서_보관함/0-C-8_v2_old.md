@@ -1,0 +1,307 @@
+# 0-C-8. 좌표를 바꿀 때 부피는 어떻게 변하는가 — 치환적분 정리와 야코비안 행렬식
+
+## 1. 1차원 치환적분에서 다차원 부피 변환으로
+
+우리는 0-B-9에서 미적분학의 기본정리(FTC)와 연쇄법칙의 결합을 통해 1차원 치환적분법을 정립했습니다:
+
+$$ \int_{g(a)}^{g(b)} f(x) \, dx = \int_a^b f(g(u)) g'(u) \, du $$
+
+적분 구간의 방향을 떼어내고 순수한 부피(길이)의 관점에서만 바라본다면, 증분 변환은 $dx = |g'(u)| \, du$ 였습니다. 1차원에서는 새로운 변수 $u$ 의 미소 길이 $du$ 에 도함수의 크기 $|g'(u)|$ 라는 단 하나의 확대율을 곱해주면 충분했습니다.
+
+하지만 다차원 공간 $\mathbb{R}^n$ 에서 좌표계를 바꿀 때는 전혀 다른 차원의 기하학적 왜곡이 발생합니다.
+
+직교좌표계 $(x, y)$ 의 반듯한 정사각형 격자 $dx dy$ 를 동심원과 방사선으로 이루어진 극좌표계 $(r, \theta)$ 로 변환할 때, 우리는 고등학교 때부터 다음과 같은 공식을 마주해 왔습니다:
+
+$$ dx \, dy = r \, dr \, d\theta $$
+
+왜 단순한 $dr \, d\theta$ 가 아니라, 원점으로부터의 거리 $r$ 이라는 비례계수가 곱해져야 할까요?
+
+더 나아가 임의의 $n$ 차원 좌표변환 $\mathbf{x} = \phi(\mathbf{u})$ 에 대하여, 부피 조각 $d\mathbf{x}$ 는 대체 어떤 규칙에 의해 변환될까요?
+
+**"왜 다차원 치환적분에서는 단순한 편도함수가 아니라, 0-C-3에서 정의했던 야코비 행렬의 '행렬식의 절댓값 $|\det J_\phi|$' 이 곱해져야만 하는가?"**
+
+이 장에서는 0-A-4와 0-A-9에서 정립했던 선형대수학의 행렬식 이론이 다변수 적분과 극적으로 만나는 **다변수 치환적분 정리(Change of Variables Theorem)** 를 증명하고, 0-C 전체를 매듭짓는 위대한 기하학적 통합을 완성하겠습니다.
+
+## 2. 선형사상과 부피: 행렬식의 참된 기하학적 정체
+
+비선형 사상을 다루기 전에, 0-A-4에서 우리가 세웠던 선형대수의 근본 원리를 다시 소환해야 합니다:
+
+**"행렬식(Determinant)이란 대체 기하학적으로 무엇이었는가?"**
+
+$n$ 개의 열벡터 $\mathbf{v}_1, \ldots, \mathbf{v}_n \in \mathbb{R}^n$ 으로 만들어지는 평행육면체(Parallelotope) $P$ 를 생각합시다:
+
+$$ P = \left\{ \sum_{i=1}^n t_i \mathbf{v}_i : 0 \le t_i \le 1 \right\} $$
+
+0-A-4에서 우리는 이 평행육면체의 $n$ 차원 부피가 열벡터들을 모아놓은 행렬의 행렬식의 절댓값과 정확히 일치함을 확인했습니다:
+
+$$ \operatorname{Vol}(P) = |\det(\mathbf{v}_1, \ldots, \mathbf{v}_n)| $$
+
+이제 이 평행육면체에 가역인 선형변환 $T(\mathbf{x}) = A\mathbf{x}$ ($A \in \operatorname{GL}(n, \mathbb{R})$)를 가해 봅시다.
+
+기저벡터들이 선형변환에 의해 $A\mathbf{v}_1, \ldots, A\mathbf{v}_n$ 으로 변환되므로, 변환된 평행육면체 $T(P)$ 의 부피는 행렬식의 곱셈 정리(0-A-4)에 의해 다음과 같이 계산됩니다:
+
+$$ \operatorname{Vol}(T(P)) = |\det(A\mathbf{v}_1, \ldots, A\mathbf{v}_n)| = |\det(A \cdot [\mathbf{v}_1, \ldots, \mathbf{v}_n])| = |\det A| \cdot |\det(\mathbf{v}_1, \ldots, \mathbf{v}_n)| $$
+
+따라서 다음의 절대적인 기하학적 법칙을 얻습니다:
+
+### [정리] 선형변환 아래에서의 부피 확대율
+
+가역인 선형변환 $T(\mathbf{x}) = A\mathbf{x}$ 와 임의의 조르당 가측 영역 $\Omega \subset \mathbb{R}^n$ 에 대하여, 변환된 영역 $T(\Omega)$ 의 부피는 원래 부피에 행렬식의 절댓값 $|\det A|$ 를 곱한 것과 정확히 같다:
+
+$$ \operatorname{Vol}(T(\Omega)) = |\det A| \, \operatorname{Vol}(\Omega) $$
+
+**행렬식 $\det A$ 의 기하학적 본체는 다름 아닌 '다차원 유향 부피의 확대 배율'이었습니다!**
+
+행렬식이 $2$ 라면 부피가 $2$ 배로 팽창하고, 행렬식이 $-3$ 이라면 거울에 비치듯 방향이 뒤집히면서 부피가 $3$ 배로 팽창합니다.
+
+## 3. 국소 선형근사와 미소 부피의 왜곡
+
+이제 비선형 좌표변환 $\mathbf{x} = \phi(\mathbf{u})$ 로 시선을 돌려 봅시다 (단, $\phi: U \subset \mathbb{R}^n \to \mathbb{R}^n$ 는 $C^1$ 급 미분동형사상).
+
+새로운 좌표 공간 $\mathbb{R}^n$ 의 한 점 $\mathbf{u}_0$ 주변에 각 변의 길이가 $\Delta u_1, \ldots, \Delta u_n$ 인 아주 미세한 직육면체 상자 $B$ 를 놓습니다. 이 미소 상자의 부피는 다음과 같습니다:
+
+$$ \Delta V_u = \Delta u_1 \Delta u_2 \cdots \Delta u_n $$
+
+사상 $\phi$ 는 이 미소 직육면체를 원래 공간 $\mathbb{R}^n$ 의 어떤 휘어진 조각 $\phi(B)$ 로 보냅니다. 이 조각의 부피는 어떻게 될까요?
+
+0-C-2와 0-C-3에서 우리는 사상 $\phi$ 가 점 $\mathbf{u}_0$ 근방에서 전미분 선형사상 $D\phi(\mathbf{u}_0)$ 로 가장 잘 근사됨을 증명했습니다!
+
+미소 상자의 각 모서리 벡터 $\Delta u_j \mathbf{e}_j$ 는 사상 $\phi$ 에 의해 다음 벡터들로 변환됩니다:
+
+$$ \phi(\mathbf{u}_0 + \Delta u_j \mathbf{e}_j) - \phi(\mathbf{u}_0) \approx D\phi(\mathbf{u}_0)(\Delta u_j \mathbf{e}_j) = \frac{\partial \phi}{\partial u_j}(\mathbf{u}_0) \Delta u_j $$
+
+이것은 다름 아닌 야코비 행렬 $J_\phi(\mathbf{u}_0)$ 의 $j$ 번째 열벡터에 $\Delta u_j$ 를 곱한 것입니다!
+
+따라서 미세한 직육면체 $B$ 는 변환을 거치면서, 모서리들이 야코비 행렬의 열벡터들로 이루어진 평행육면체로 국소적으로 근사됩니다.
+
+앞서 증명한 선형변환의 부피 정리(2절)를 이 미소 영역에 적용하면:
+
+$$ \Delta V_x \approx \left| \det\left( \frac{\partial \phi}{\partial u_1} \Delta u_1, \ldots, \frac{\partial \phi}{\partial u_n} \Delta u_n \right) \right| = |\det J_\phi(\mathbf{u}_0)| \, \Delta u_1 \cdots \Delta u_n = |\det J_\phi(\mathbf{u}_0)| \, \Delta V_u $$
+
+극한 $\Delta u_j \to 0$ 을 취하면, 공간의 미소 부피 요소 사이의 완벽한 변환 공식이 탄생합니다:
+
+$$ d\mathbf{x} = |\det J_\phi(\mathbf{u})| \, d\mathbf{u} $$
+
+**비선형 사상 아래에서 공간이 국소적으로 얼마나 팽창하고 압축되는지를 가늠하는 부피 왜곡률, 그 정체가 바로 야코비안 행렬식(Jacobian Determinant)이었던 것입니다!**
+
+
+
+<div class="card" style="margin: 2em 0; padding: 18px 12px; text-align: center; overflow-x: auto;">
+<svg viewBox="0 0 760 305" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+.math-sym { font-family: 'KaTeX_Math', 'KaTeX_Main', 'Cambria Math', 'Times New Roman', serif; font-style: italic; }
+.math-bb { font-family: 'KaTeX_AMS', 'KaTeX_Main', 'Times New Roman', serif; font-style: normal; font-weight: bold; }
+.math-main { font-family: 'KaTeX_Main', 'Times New Roman', serif; font-style: normal; }
+.desc-txt { font-family: var(--font-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif); font-weight: 500; }
+</style>
+<marker id="arr-primary" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+<path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb" />
+</marker>
+<marker id="arr-text" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+<path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#334155" />
+</marker>
+<marker id="arr-sub" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+<path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b" />
+</marker>
+</defs>
+<rect x="8" y="8" width="744" height="289" rx="12" fill="var(--card-bg, #f8fafc)" stroke="var(--border-color, #cbd5e1)" stroke-width="1.2" />
+<text x="380" y="32" text-anchor="middle" font-size="14" fill="var(--title-color, #0f172a)" class="desc-txt">[도식 1] 비선형 좌표변환 <tspan class="math-sym">ϕ</tspan><tspan class="math-main"> : </tspan><tspan class="math-sym">U</tspan><tspan class="math-main"> → Ω</tspan> 의 국소 선형근사와 야코비안 부피 왜곡률 <tspan class="math-main">|det </tspan><tspan class="math-sym">J</tspan><tspan dy="3" font-size="8.5" class="math-sym">ϕ</tspan><tspan dy="-3" class="math-main">|</tspan></text>
+<rect x="35" y="52" width="295" height="232" rx="10" fill="var(--paper-bg, #ffffff)" stroke="var(--border-color, #94a3b8)" stroke-width="1.5" />
+<rect x="50" y="63" width="265" height="22" rx="4" fill="var(--card-bg, #f1f5f9)" />
+<text x="182" y="78" text-anchor="middle" font-size="11.5" fill="var(--title-color, #0f172a)" class="desc-txt">[정의역] 매개변수 공간 <tspan class="math-sym">U</tspan><tspan class="math-main"> ⊂ </tspan><tspan class="math-bb">R</tspan><tspan dy="-4" font-size="8" class="math-main">2</tspan><tspan dy="4"> (</tspan><tspan class="math-sym">u, v</tspan><tspan class="math-main">)</tspan></text>
+<line x1="75" y1="225" x2="295" y2="225" stroke="var(--sub-color, #64748b)" stroke-width="1.3" marker-end="url(#arr-sub)" />
+<line x1="95" y1="242" x2="95" y2="95" stroke="var(--sub-color, #64748b)" stroke-width="1.3" marker-end="url(#arr-sub)" />
+<rect x="135" y="130" width="90" height="65" fill="none" stroke="var(--primary-color, #2563eb)" stroke-width="2" />
+<line x1="135" y1="195" x2="225" y2="195" stroke="var(--primary-color, #2563eb)" stroke-width="2.6" marker-end="url(#arr-primary)" />
+<line x1="135" y1="195" x2="135" y2="130" stroke="var(--text-color, #334155)" stroke-width="2.6" marker-end="url(#arr-text)" />
+<circle cx="135" cy="195" r="4.5" fill="var(--title-color, #0f172a)" />
+<text x="180" y="212" text-anchor="middle" font-size="11.5" fill="var(--primary-color, #2563eb)" class="math-main">Δ<tspan class="math-sym">u e</tspan><tspan dy="3" font-size="8">1</tspan></text>
+<text x="126" y="165" text-anchor="end" font-size="11.5" fill="var(--text-color, #334155)" class="math-main">Δ<tspan class="math-sym">v e</tspan><tspan dy="3" font-size="8">2</tspan></text>
+<text x="182" y="268" text-anchor="middle" font-size="11.5" fill="var(--title-color, #0f172a)" class="math-main">Δ<tspan class="math-sym">V</tspan><tspan dy="3" font-size="8" class="math-sym">u</tspan><tspan dy="-3"> = Δ</tspan><tspan class="math-sym">u</tspan> Δ<tspan class="math-sym">v</tspan></text>
+<rect x="415" y="52" width="310" height="232" rx="10" fill="var(--paper-bg, #ffffff)" stroke="var(--primary-color, #2563eb)" stroke-width="1.6" />
+<rect x="430" y="63" width="280" height="22" rx="4" fill="var(--card-bg, #eff6ff)" />
+<text x="570" y="78" text-anchor="middle" font-size="11.5" fill="var(--primary-color, #2563eb)" class="desc-txt">[공역] 물리 좌표 공간 <tspan class="math-main">Ω = </tspan><tspan class="math-sym">ϕ</tspan><tspan class="math-main">(</tspan><tspan class="math-sym">U</tspan><tspan class="math-main">) ⊂ </tspan><tspan class="math-bb">R</tspan><tspan dy="-4" font-size="8" class="math-main">2</tspan><tspan dy="4"> (</tspan><tspan class="math-sym">x, y</tspan><tspan class="math-main">)</tspan></text>
+<line x1="450" y1="225" x2="695" y2="225" stroke="var(--sub-color, #64748b)" stroke-width="1.3" marker-end="url(#arr-sub)" />
+<line x1="470" y1="242" x2="470" y2="95" stroke="var(--sub-color, #64748b)" stroke-width="1.3" marker-end="url(#arr-sub)" />
+<polygon points="505,195 605,175 645,115 545,135" fill="none" stroke="var(--primary-color, #2563eb)" stroke-width="1.6" stroke-dasharray="4,2" />
+<line x1="505" y1="195" x2="605" y2="175" stroke="var(--primary-color, #2563eb)" stroke-width="2.6" marker-end="url(#arr-primary)" />
+<line x1="505" y1="195" x2="545" y2="135" stroke="var(--text-color, #334155)" stroke-width="2.6" marker-end="url(#arr-text)" />
+<circle cx="505" cy="195" r="4.5" fill="var(--title-color, #0f172a)" />
+<text x="580" y="202" font-size="11.5" fill="var(--primary-color, #2563eb)" class="math-main">(∂<tspan class="math-sym">ϕ</tspan>/∂<tspan class="math-sym">u</tspan>) Δ<tspan class="math-sym">u</tspan></text>
+<text x="530" y="125" font-size="11.5" fill="var(--text-color, #334155)" class="math-main">(∂<tspan class="math-sym">ϕ</tspan>/∂<tspan class="math-sym">v</tspan>) Δ<tspan class="math-sym">v</tspan></text>
+<text x="570" y="268" text-anchor="middle" font-size="11.5" fill="var(--primary-color, #2563eb)" class="math-main">Δ<tspan class="math-sym">V</tspan><tspan dy="3" font-size="8" class="math-sym">x</tspan><tspan dy="-3"> ≈ |det </tspan><tspan class="math-sym">J</tspan><tspan dy="3" font-size="8" class="math-sym">ϕ</tspan><tspan dy="-3">| Δ</tspan><tspan class="math-sym">u</tspan> Δ<tspan class="math-sym">v</tspan></text>
+<line x1="336" y1="165" x2="408" y2="165" stroke="var(--primary-color, #2563eb)" stroke-width="2.4" marker-end="url(#arr-primary)" />
+<text x="372" y="152" text-anchor="middle" font-size="12.5" fill="var(--primary-color, #2563eb)" class="math-sym">ϕ</text>
+</svg>
+</div>
+
+## 4. 다변수 치환적분 정리
+
+이 기하학적 사실을 0-C-7의 다중적분 체계와 결합하면, 다변수 해석학의 최정상에 놓인 치환적분 정리가 완성됩니다.
+
+### [정리] 다변수 치환적분 정리 (Change of Variables Theorem)
+
+열린집합 $U \subset \mathbb{R}^n$ 에서 정의된 일대일 $C^1$ 급 사상 $\phi: U \to \mathbb{R}^n$ 에 대하여, 모든 점 $\mathbf{u} \in U$ 에서 야코비 행렬식이 $0$ 이 아니라고 하자:
+
+$$ \det J_\phi(\mathbf{u}) \ne 0 $$
+
+조르당 가측 닫힌 유계영역 $E \subset U$ 와 그 상 $\Omega = \phi(E)$, 그리고 $\Omega$ 위에서 연속인 함수 $f: \Omega \to \mathbb{R}$ 에 대하여, 다음 등식이 성립한다:
+
+$$ \int_\Omega f(\mathbf{x}) \, d\mathbf{x} = \int_E (f \circ \phi)(\mathbf{u}) \, |\det J_\phi(\mathbf{u})| \, d\mathbf{u} $$
+
+**증명의 기하학적 뼈대**
+
+1. 영역 $E$ 를 충분히 잘게 쪼갠 소상자들 $\{ B_k \}$ 로 분할합니다.
+2. 각각의 소상자 $B_k$ 위에서 0-C-3의 테일러 1차 근사식을 적용하면, 변환된 조각 $\phi(B_k)$ 의 부피는 선형사상 $D\phi(\mathbf{u}_k)$ 에 의한 평행육면체의 부피 $|\det J_\phi(\mathbf{u}_k)| \, v(B_k)$ 로 균등하게 수렴합니다.
+3. $\Omega$ 위에서의 리만 합 $\sum f(\mathbf{x}_k) v(\phi(B_k))$ 에 이 부피 근사를 대입하면:
+$$ \sum_k f(\phi(\mathbf{u}_k)) |\det J_\phi(\mathbf{u}_k)| \, v(B_k) $$
+4. 분할을 한없이 잘게 조이면, 0-C-7의 리만 적분의 정의에 의해 이 합은 정확히 $E$ 위에서의 다중적분 $\int_E (f \circ \phi)(\mathbf{u}) |\det J_\phi(\mathbf{u})| \, d\mathbf{u}$ 로 수렴합니다.
+
+증명이 끝났습니다.
+
+## 5. 친숙한 좌표계들의 기하학적 비밀
+
+이 정리의 강력함을 우리가 일상적으로 사용하는 다차원 곡선 좌표계들을 통해 확인해 봅시다.
+
+### 5.1 2차원 극좌표 변환 (Polar Coordinates)
+
+평면 위의 직교좌표 $(x, y)$ 를 거리 $r$ 과 각도 $\theta$ 로 변환합니다:
+
+$$ \phi(r, \theta) = (r \cos\theta, r \sin\theta) $$
+
+야코비 행렬은 다음과 같습니다:
+
+$$ J_\phi(r, \theta) = \begin{pmatrix} \cos\theta & -r\sin\theta \\ \sin\theta & r\cos\theta \end{pmatrix} $$
+
+그 행렬식의 절댓값은:
+
+$$ |\det J_\phi(r, \theta)| = |r\cos^2\theta + r\sin^2\theta| = |r| = r \quad (r > 0) $$
+
+따라서 치환적분 정리에 의해:
+
+$$ dx \, dy = r \, dr \, d\theta $$
+
+기하학적으로 반경 $r$ 이 커질수록 부채꼴의 호의 길이가 $r \, d\theta$ 로 늘어나기 때문에, 면적 조각이 $r$ 에 비례하여 팽창하는 물리적 직관과 완벽하게 일치합니다!
+
+
+
+<div class="card" style="margin: 2em 0; padding: 18px 12px; text-align: center; overflow-x: auto;">
+<svg viewBox="0 0 760 305" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+.math-sym { font-family: 'KaTeX_Math', 'KaTeX_Main', 'Cambria Math', 'Times New Roman', serif; font-style: italic; }
+.math-bb { font-family: 'KaTeX_AMS', 'KaTeX_Main', 'Times New Roman', serif; font-style: normal; font-weight: bold; }
+.math-main { font-family: 'KaTeX_Main', 'Times New Roman', serif; font-style: normal; }
+.desc-txt { font-family: var(--font-family-body, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif); font-weight: 500; }
+</style>
+<marker id="arr-primary" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+<path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563eb" />
+</marker>
+<marker id="arr-text" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+<path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#334155" />
+</marker>
+<marker id="arr-sub" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+<path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b" />
+</marker>
+</defs>
+<rect x="8" y="8" width="744" height="289" rx="12" fill="var(--card-bg, #f8fafc)" stroke="var(--border-color, #cbd5e1)" stroke-width="1.2" />
+<text x="380" y="32" text-anchor="middle" font-size="14" fill="var(--title-color, #0f172a)" class="desc-txt">[도식 2] 극좌표 변환 <tspan class="math-sym">ϕ</tspan><tspan class="math-main">(</tspan><tspan class="math-sym">r, θ</tspan><tspan class="math-main">) = (</tspan><tspan class="math-sym">r</tspan><tspan class="math-main"> cos </tspan><tspan class="math-sym">θ, r</tspan><tspan class="math-main"> sin </tspan><tspan class="math-sym">θ</tspan><tspan class="math-main">)</tspan> 의 면적 요소 <tspan class="math-sym">dx dy = r dr dθ</tspan></text>
+<rect x="35" y="52" width="295" height="232" rx="10" fill="var(--paper-bg, #ffffff)" stroke="var(--border-color, #94a3b8)" stroke-width="1.5" />
+<rect x="50" y="63" width="265" height="22" rx="4" fill="var(--card-bg, #f1f5f9)" />
+<text x="182" y="78" text-anchor="middle" font-size="11.5" fill="var(--title-color, #0f172a)" class="desc-txt">[정의역] 극좌표 매개변수 평면 <tspan class="math-main">(</tspan><tspan class="math-sym">r, θ</tspan><tspan class="math-main">)</tspan></text>
+<line x1="75" y1="225" x2="295" y2="225" stroke="var(--sub-color, #64748b)" stroke-width="1.3" marker-end="url(#arr-sub)" />
+<line x1="95" y1="242" x2="95" y2="95" stroke="var(--sub-color, #64748b)" stroke-width="1.3" marker-end="url(#arr-sub)" />
+<rect x="145" y="130" width="80" height="55" fill="none" stroke="var(--primary-color, #2563eb)" stroke-width="2" />
+<text x="185" y="202" text-anchor="middle" font-size="11.5" fill="var(--primary-color, #2563eb)" class="math-main">d<tspan class="math-sym">r</tspan></text>
+<text x="136" y="162" text-anchor="end" font-size="11.5" fill="var(--primary-color, #2563eb)" class="math-main">d<tspan class="math-sym">θ</tspan></text>
+<text x="290" y="242" font-size="11.5" fill="var(--title-color, #0f172a)" class="math-sym">r</text>
+<text x="85" y="102" text-anchor="end" font-size="11.5" fill="var(--title-color, #0f172a)" class="math-sym">θ</text>
+<text x="182" y="268" text-anchor="middle" font-size="11.5" fill="var(--text-color, #334155)" class="desc-txt">매개변수 직사각형 넓이 = <tspan class="math-sym">dr dθ</tspan></text>
+<rect x="415" y="52" width="310" height="232" rx="10" fill="var(--paper-bg, #ffffff)" stroke="var(--primary-color, #2563eb)" stroke-width="1.6" />
+<rect x="430" y="63" width="280" height="22" rx="4" fill="var(--card-bg, #eff6ff)" />
+<text x="570" y="78" text-anchor="middle" font-size="11.5" fill="var(--primary-color, #2563eb)" class="desc-txt">[공역] 직교좌표 평면 <tspan class="math-main">(</tspan><tspan class="math-sym">x, y</tspan><tspan class="math-main">)</tspan> 의 부채꼴 미소 조각</text>
+<line x1="455" y1="225" x2="695" y2="225" stroke="var(--sub-color, #64748b)" stroke-width="1.3" marker-end="url(#arr-sub)" />
+<line x1="475" y1="242" x2="475" y2="95" stroke="var(--sub-color, #64748b)" stroke-width="1.3" marker-end="url(#arr-sub)" />
+<line x1="475" y1="225" x2="665" y2="174" stroke="var(--border-color, #94a3b8)" stroke-width="1.3" stroke-dasharray="4,3" />
+<line x1="475" y1="225" x2="625" y2="105" stroke="var(--border-color, #94a3b8)" stroke-width="1.3" stroke-dasharray="4,3" />
+<path d="M 556 160 A 104 104 0 0 1 575 198" fill="none" stroke="var(--primary-color, #2563eb)" stroke-width="2.4" />
+<path d="M 595 129 A 154 154 0 0 1 623 185" fill="none" stroke="var(--primary-color, #2563eb)" stroke-width="2.4" />
+<line x1="556" y1="160" x2="595" y2="129" stroke="var(--primary-color, #2563eb)" stroke-width="2.4" />
+<line x1="575" y1="198" x2="623" y2="185" stroke="var(--primary-color, #2563eb)" stroke-width="2.4" />
+<text x="550" y="186" text-anchor="end" font-size="11.5" fill="var(--title-color, #0f172a)" class="math-sym">r dθ</text>
+<text x="608" y="206" font-size="11.5" fill="var(--primary-color, #2563eb)" class="math-sym">dr</text>
+<text x="570" y="268" text-anchor="middle" font-size="11.5" fill="var(--primary-color, #2563eb)" class="desc-txt">호의 길이 <tspan class="math-sym">r dθ</tspan><tspan class="math-main"> × </tspan>반경 폭 <tspan class="math-sym">dr</tspan><tspan class="math-main"> ⇒ </tspan><tspan class="math-sym">dx dy = r dr dθ</tspan></text>
+<line x1="336" y1="165" x2="408" y2="165" stroke="var(--primary-color, #2563eb)" stroke-width="2.4" marker-end="url(#arr-primary)" />
+<text x="372" y="152" text-anchor="middle" font-size="12" fill="var(--primary-color, #2563eb)" class="math-sym">ϕ</text>
+</svg>
+</div>
+
+이 극좌표 치환적분 공식을 적용하면, 지난 장(0-C-7) 마지막에 남겨 두었던 **가우스 적분** $I = \int_{-\infty}^\infty e^{-x^2}\,dx$ 의 값을 단번에 구할 수 있습니다:
+$$
+I^2 = \iint_{\mathbb{R}^2} e^{-(x^2 + y^2)} \, dx \, dy = \int_0^{2\pi} \int_0^\infty e^{-r^2} r \, dr \, d\theta = 2\pi \left[ -\frac{1}{2} e^{-r^2} \right]_0^\infty = 2\pi \cdot \frac{1}{2} = \pi
+$$
+피적분함수에 야코비 행렬식 $r$ 이 곱해진 덕분에 $e^{-r^2} r$ 의 역도함수 $-\frac{1}{2}e^{-r^2}$ 가 초등함수로 즉시 적분되어,
+$$
+\int_{-\infty}^\infty e^{-x^2} \, dx = \sqrt{\pi}
+$$
+라는 해석학의 고전적인 공식이 완성됩니다.
+
+### 5.2 3차원 원기둥좌표 변환 (Cylindrical Coordinates)
+
+$$ x = r\cos\theta, \quad y = r\sin\theta, \quad z = z $$
+
+$$ J_\phi = \begin{pmatrix} \cos\theta & -r\sin\theta & 0 \\ \sin\theta & r\cos\theta & 0 \\ 0 & 0 & 1 \end{pmatrix} \quad \implies \quad |\det J_\phi| = r $$
+
+따라서:
+
+$$ dx \, dy \, dz = r \, dr \, d\theta \, dz $$
+
+### 5.3 3차원 구면좌표 변환 (Spherical Coordinates)
+
+거리 $\rho$, 방위각 $\theta$, 천정각 $\phi$ 로 3차원 공간을 기술합니다:
+
+$$ x = \rho \sin\phi \cos\theta, \quad y = \rho \sin\phi \sin\theta, \quad z = \rho \cos\phi $$
+
+야코비 행렬을 계산하여 0-A-4의 행렬식 공식을 전개하면 놀라운 결과가 나옵니다:
+
+$$ \det J = \rho^2 \sin\phi $$
+
+따라서:
+
+$$ dx \, dy \, dz = \rho^2 \sin\phi \, d\rho \, d\phi \, d\theta $$
+
+반지름 $\rho$ 가 커질수록 구면의 표면적이 $\rho^2$ 으로 넓어지고, 극지방에서 적도로 갈수록 위도선 둘레가 $\sin\phi$ 에 비례하여 벌어지는 공간의 입체적 기하학이 행렬식 단 하나로 완벽히 정복되었습니다.
+
+## 6. 0-C 다변수 해석학의 종합과 리만 기하학으로의 연결
+
+이제 잠시 멈추어 서서, 우리가 0-C에서 이룩한 거대한 지적 성취를 되돌아봅시다.
+
+우리는 0-A의 선형대수학(선형사상, 행렬, 행렬식, 이차형식)과 0-B의 실해석학(완비성, 극한, 연속성, 1변수 미분·적분)을 하나의 웅장한 체계로 결합시켰습니다:
+
+1. **0-C-1 (공간의 위상과 극한):** 유클리드 노름과 열린 공을 통해 다차원 극한을 정립하고, 다차원 공간에서의 경로 의존성과 열린 공 근방의 역할을 규명했습니다.
+2. **0-C-2 (편미분의 한계와 전미분):** 축 방향 편도함수만으로는 연속성이 보장되지 않는 한계를 넘어, 미분의 본체가 비선형 변화를 국소적으로 흉내 내는 '최적의 선형사상 $Df(\mathbf{x})$' 임을 천명했습니다.
+3. **0-C-3 (야코비 행렬과 연쇄법칙):** 전미분 선형사상을 표준기저 위에서 기록한 장부가 야코비 행렬 $J_f$ 임을 밝히고, 사상의 합성이 행렬곱으로 번역되는 다변수 연쇄법칙을 입증했습니다.
+4. **0-C-4 (헤시안 행렬과 2차 근사):** 혼합 편도함수의 대칭성(클레로 정리)을 통해 헤시안 행렬이 실 대칭행렬임을 보이고, 곡면의 2차 곡률과 임계점이 선형대수의 '이차형식과 고윳값'으로 판정됨을 밝혔습니다.
+5. **0-C-5 (역함수 정리):** 바나흐 축약사상 원리의 완비성 위에서, 야코비 행렬식이 $0$ 이 아닐 때 국소 미분동형사상 $f^{-1}$ 이 존재함을 증명하여 다양체의 '국소 좌표 차트'의 문을 열었습니다.
+6. **0-C-6 (음함수 정리):** 구속조건의 사슬에 얽힌 변수들을 해방시키고, 등위면의 기하학을 통해 라그랑주 승수법과 매끄러운 부분다양체의 정칙값 정리를 확립했습니다.
+7. **0-C-7 (다중적분과 푸비니 정리):** 소상자들의 상·하합 그물망으로 다차원 부피를 정의하고, 푸비니 정리를 통해 다중적분을 1변수 반복적분으로 계산하는 기적을 완성했습니다.
+8. **0-C-8 (치환적분과 야코비안 행렬식):** 선형변환의 부피 확대율이 행렬식 $|\det A|$ 라는 대수적 원리로부터, 비선형 좌표변환의 부피 요소 $d\mathbf{x} = |\det J_\phi| d\mathbf{u}$ 를 완벽히 연역했습니다.
+
+이 마지막 정리는 훗날 우리가 **5단계 리만 기하학** 에 도달했을 때 핵심적인 기하학적 도구로 확장됩니다.
+
+휘어진 곡면 위에 계량 텐서 $g_{ij}$ 가 주어졌을 때, 곡면 위의 고유 부피 요소가 왜
+
+$$ dV_g = \sqrt{\det(g_{ij})} \, dx^1 \cdots dx^n $$
+
+실제로 좌표변환 $\mathbf{x} = \phi(u^1, \ldots, u^n)$ 에 의해 유도되는 계량 행렬 $G = (g_{ij})$ 의 각 성분은 야코비 행렬의 열벡터들의 유클리드 내적 $g_{ij} = \frac{\partial \phi}{\partial u^i} \cdot \frac{\partial \phi}{\partial u^j}$ 이므로, 행렬곱으로는
+$$
+G = J_\phi^{\mathsf{T}} J_\phi \quad \Longrightarrow \quad \det(g_{ij}) = \det(J_\phi^{\mathsf{T}} J_\phi) = (\det J_\phi)^2 \quad \Longrightarrow \quad \sqrt{\det(g_{ij})} = |\det J_\phi|
+$$
+가 성립합니다.
+
+이 되는지, 그 궁극의 비밀의 씨앗이 바로 오늘 증명한 야코비안 행렬식 속에 완벽하게 심겨져 있습니다.
+
+0-A(선형대수학), 0-B(1변수 실해석학), 그리고 0-C(다변수 해석학)에 이르는 장대한 기초 언어의 건축이 단 하나의 빈틈도 없이 완성되었습니다.
+
+다음 파트인 **0-D. 상미분방정식과 국소 흐름** 에서는 지금까지 다진 선형대수학과 다변수 해석학의 도구를 바탕으로, 벡터장이 만들어 내는 곡선과 흐름의 존재·유일성 이론을 살펴보겠습니다.
